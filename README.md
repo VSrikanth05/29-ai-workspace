@@ -16,6 +16,10 @@
 
 ### 🌐 [Click Here to Open the Live Application (https://29-ai-workspace.vercel.app)](https://29-ai-workspace.vercel.app)
 
+<br/>
+
+[![29 AI Workspace Live Preview](./docs/assets/workspace_preview.png)](https://29-ai-workspace.vercel.app)
+
 </div>
 
 ---
