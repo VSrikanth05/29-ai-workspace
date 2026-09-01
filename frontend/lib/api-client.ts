@@ -1,10 +1,16 @@
-const API_BASE_URL = (
-  process.env.NEXT_PUBLIC_API_URL ||
-  process.env.NEXT_PUBLIC_BACKEND_URL ||
-  (typeof window !== 'undefined' && window.location.hostname.includes('vercel.app')
-    ? 'https://two9-ai-workspace.onrender.com'
-    : '/api')
-).replace(/\/$/, '');
+export function getApiBaseUrl(): string {
+  const configured = process.env.NEXT_PUBLIC_API_URL || process.env.NEXT_PUBLIC_BACKEND_URL;
+  if (configured && configured !== '/api') {
+    return configured.replace(/\/$/, '');
+  }
+  if (typeof window !== 'undefined') {
+    if (window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
+      return 'https://two9-ai-workspace.onrender.com';
+    }
+  }
+  return '/api';
+}
+
 export const ACCESS_TOKEN_KEY = '29ai.access-token';
 export const REFRESH_TOKEN_KEY = '29ai.refresh-token';
 export const LEGACY_ACCESS_TOKEN_KEY = 'access_token';
@@ -64,6 +70,18 @@ export function clearAccessToken() {
   if (hadToken) window.dispatchEvent(new Event(AUTH_CHANGE_EVENT));
 }
 
+export function getSafeNextPath(nextParam: string | null): string {
+  if (!nextParam) return '/dashboard';
+  if (!nextParam.startsWith('/') || nextParam.startsWith('//')) return '/dashboard';
+  return nextParam;
+}
+
+export function extractErrorMessage(cause: unknown, fallback: string): string {
+  if (cause instanceof ApiError) return cause.message;
+  if (cause instanceof Error && cause.message) return cause.message;
+  return fallback;
+}
+
 export function subscribeToAuthChanges(onChange: () => void) {
   if (typeof window === 'undefined') return () => undefined;
   const handleStorage = (event: StorageEvent) => {
@@ -85,7 +103,7 @@ async function refreshAccessToken() {
     const refreshToken = readRefreshToken();
     if (!refreshToken) return false;
     try {
-      const response = await fetch(`${API_BASE_URL}/auth/refresh`, {
+      const response = await fetch(`${getApiBaseUrl()}/auth/refresh`, {
         method: 'POST',
         headers: { Accept: 'application/json', 'Content-Type': 'application/json' },
         body: JSON.stringify({ refreshToken }),
@@ -108,7 +126,7 @@ async function refreshAccessToken() {
 export async function apiRequest<T>(path: string, init: RequestInit = {}): Promise<T> {
   const request = () => {
     const token = readAccessToken();
-    return fetch(`${API_BASE_URL}${path}`, {
+    return fetch(`${getApiBaseUrl()}${path}`, {
       ...init,
       headers: { Accept: 'application/json', ...(init.body instanceof FormData ? {} : { 'Content-Type': 'application/json' }), ...(token ? { Authorization: `Bearer ${token}` } : {}), ...init.headers },
     });
@@ -126,7 +144,7 @@ export async function apiRequest<T>(path: string, init: RequestInit = {}): Promi
 export async function apiStreamRequest(path: string, body: unknown, signal: AbortSignal): Promise<Response> {
   const request = () => {
     const token = readAccessToken();
-    return fetch(`${API_BASE_URL}${path}`, {
+    return fetch(`${getApiBaseUrl()}${path}`, {
       method: 'POST', signal,
       headers: { Accept: 'text/event-stream', 'Content-Type': 'application/json', ...(token ? { Authorization: `Bearer ${token}` } : {}) },
       body: JSON.stringify(body),
@@ -145,7 +163,7 @@ export async function apiStreamRequest(path: string, body: unknown, signal: Abor
 export function uploadSource(workspaceId: string, file: File, onProgress: (progress: number) => void): { promise: Promise<void>; cancel: () => void } {
   const xhr = new XMLHttpRequest();
   const promise = new Promise<void>((resolve, reject) => {
-    xhr.open('POST', `${API_BASE_URL}/workspaces/${workspaceId}/sources`);
+    xhr.open('POST', `${getApiBaseUrl()}/workspaces/${workspaceId}/sources`);
     const token = readAccessToken();
     if (token) xhr.setRequestHeader('Authorization', `Bearer ${token}`);
     xhr.upload.addEventListener('progress', (event) => event.lengthComputable && onProgress(Math.round((event.loaded / event.total) * 100)));
