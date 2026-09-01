@@ -2,17 +2,17 @@ import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import * as crypto from 'crypto';
 
-export interface CreateOrderDto {
-  planId: string;
-  amount: number;
+export class CreateOrderDto {
+  planId!: string;
+  amount!: number;
   currency?: string;
   workspaceId?: string;
 }
 
-export interface VerifyPaymentDto {
-  razorpayOrderId: string;
-  razorpayPaymentId: string;
-  razorpaySignature: string;
+export class VerifyPaymentDto {
+  razorpayOrderId!: string;
+  razorpayPaymentId!: string;
+  razorpaySignature!: string;
 }
 
 export interface PlanInfo {
