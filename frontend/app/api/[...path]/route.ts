@@ -1,4 +1,5 @@
-import { NextRequest, NextResponse } from 'next/server';
+import type { NextRequest } from 'next/server';
+import { NextResponse } from 'next/server';
 
 export const dynamic = 'force-dynamic';
 
@@ -42,11 +43,12 @@ async function handleProxy(req: NextRequest, { params }: { params: Promise<{ pat
       statusText: response.statusText,
       headers: responseHeaders,
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
+    const errorMessage = error instanceof Error ? error.message : String(error);
     return NextResponse.json(
       {
         statusCode: 502,
-        message: 'Failed to connect to backend server: ' + error.message,
+        message: 'Failed to connect to backend server: ' + errorMessage,
         targetUrl,
       },
       { status: 502 },
