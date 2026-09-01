@@ -122,7 +122,7 @@ model DocumentChunk {
   embedding Unsupported("vector(1536)")?
 
   /// Generated PostgreSQL full-text search vector. Read by TextSearchRetriever.
-  searchVector Unsupported("tsvector")?
+  searchVector Unsupported("tsvector")? @default(dbgenerated())
 
   document Document @relation(fields: [documentId], references: [id], onDelete: Cascade)
 
