@@ -25,6 +25,7 @@ build/
 .next/
 out/
 /generated/prisma
+*.tsbuildinfo
 
 # Logs & Runtime
 *.log
