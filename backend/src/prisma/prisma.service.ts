@@ -7,10 +7,18 @@ export class PrismaService
   implements OnModuleInit, OnModuleDestroy
 {
   async onModuleInit(): Promise<void> {
-    await this.$connect();
+    try {
+      await this.$connect();
+    } catch (err: any) {
+      console.warn('[PrismaService] Database initial connection warning:', err.message);
+    }
   }
 
   async onModuleDestroy(): Promise<void> {
-    await this.$disconnect();
+    try {
+      await this.$disconnect();
+    } catch {
+      // Ignore disconnect error
+    }
   }
 }

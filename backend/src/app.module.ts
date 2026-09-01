@@ -51,8 +51,8 @@ export const configEnvFilePath = [
           .valid('development', 'test', 'production')
           .default('development'),
         PORT: Joi.number().port().default(5000),
-        DATABASE_URL: Joi.string().required(),
-        DIRECT_URL: Joi.string().required(),
+        DATABASE_URL: Joi.string().optional().allow(''),
+        DIRECT_URL: Joi.string().optional().allow(''),
         REDIS_URL: Joi.string().uri().optional().allow(''),
         INGESTION_ASYNC_ENABLED: Joi.boolean()
           .truthy('true')
