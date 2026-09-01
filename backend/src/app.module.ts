@@ -29,6 +29,8 @@ import { SearchModule } from './search/search.module';
 import { SharingModule } from './sharing/sharing.module';
 import { TagsModule } from './tags/tags.module';
 import { MediaModule } from './media/media.module';
+import { EmailModule } from './email/email.module';
+import { PaymentsModule } from './payments/payments.module';
 
 export const configEnvFilePath = [
   resolve(__dirname, '..', '..', '.env'),
@@ -91,6 +93,8 @@ export const configEnvFilePath = [
     CollectionsModule,
     TagsModule,
     MediaModule,
+    EmailModule,
+    PaymentsModule,
     SearchModule,
     SharingModule,
     PreferencesModule,

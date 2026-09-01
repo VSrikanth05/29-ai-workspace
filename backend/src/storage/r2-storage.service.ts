@@ -13,16 +13,18 @@ import type { ObjectStorage } from './object-storage';
 export class R2StorageService implements ObjectStorage {
   readonly bucketName: string;
   private readonly client: S3Client;
+  private readonly publicUrl?: string;
 
   constructor(config: ConfigService) {
-    const accountId = config.getOrThrow<string>('R2_ACCOUNT_ID');
-    this.bucketName = config.getOrThrow<string>('R2_BUCKET_NAME');
+    const accountId = config.get<string>('R2_ACCOUNT_ID') || 'mock-r2-account';
+    this.bucketName = config.get<string>('R2_BUCKET_NAME') || '29-ai-workspace-sources';
+    this.publicUrl = config.get<string>('R2_PUBLIC_URL')?.replace(/\/+$/, '');
     this.client = new S3Client({
       region: 'auto',
       endpoint: `https://${accountId}.r2.cloudflarestorage.com`,
       credentials: {
-        accessKeyId: config.getOrThrow<string>('R2_ACCESS_KEY_ID'),
-        secretAccessKey: config.getOrThrow<string>('R2_SECRET_ACCESS_KEY'),
+        accessKeyId: config.get<string>('R2_ACCESS_KEY_ID') || 'mock-key',
+        secretAccessKey: config.get<string>('R2_SECRET_ACCESS_KEY') || 'mock-secret',
       },
     });
   }
@@ -55,6 +57,9 @@ export class R2StorageService implements ObjectStorage {
   }
 
   getSignedUrl(key: string, expiresInSeconds = 3600) {
+    if (this.publicUrl) {
+      return Promise.resolve(`${this.publicUrl}/${key}`);
+    }
     return getSignedUrl(
       this.client,
       new GetObjectCommand({ Bucket: this.bucketName, Key: key }),
