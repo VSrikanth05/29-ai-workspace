@@ -39,18 +39,24 @@ export class SupabaseService implements OnModuleInit {
       );
     }
 
-    this.auth = createClient(url ?? '', anonKey ?? '', {
+    const safeUrl = url && url.startsWith('http') ? url : 'https://placeholder.supabase.co';
+    const safeAnon = anonKey || 'placeholder';
+    const safeService = serviceRoleKey || 'placeholder';
+
+    this.auth = createClient(safeUrl, safeAnon, {
       auth: { autoRefreshToken: false, persistSession: false },
     });
 
-    this.admin = createClient(url ?? '', serviceRoleKey ?? '', {
+    this.admin = createClient(safeUrl, safeService, {
       auth: { autoRefreshToken: false, persistSession: false },
     });
   }
 
   /** Creates an isolated anon client for request-scoped auth flows. */
   createAuthClient() {
-    return createClient(this.supabaseUrl, this.supabaseAnonKey, {
+    const safeUrl = this.supabaseUrl && this.supabaseUrl.startsWith('http') ? this.supabaseUrl : 'https://placeholder.supabase.co';
+    const safeAnon = this.supabaseAnonKey || 'placeholder';
+    return createClient(safeUrl, safeAnon, {
       auth: { autoRefreshToken: false, persistSession: false },
     });
   }

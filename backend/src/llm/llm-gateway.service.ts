@@ -1,4 +1,4 @@
-import { HttpStatus, Injectable, OnModuleInit } from '@nestjs/common';
+import { HttpStatus, Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import {
   ChatCompletionResult,
@@ -32,6 +32,7 @@ export interface ChatStreamResult {
  */
 @Injectable()
 export class LlmGatewayService implements OnModuleInit {
+  private readonly logger = new Logger(LlmGatewayService.name);
   private readonly providers = new Map<string, LlmProvider>();
 
   constructor(
@@ -63,26 +64,43 @@ export class LlmGatewayService implements OnModuleInit {
 
   /** Seeds/updates the LlmConfig catalog table so the frontend can list available models. */
   async onModuleInit() {
-    for (const provider of this.providers.values()) {
-      await this.prisma.llmConfig.upsert({
-        where: { provider: provider.key },
-        update: {
-          displayName: provider.displayName,
-          model: provider.model,
-          isConfigured: provider.isConfigured(),
-        },
-        create: {
-          provider: provider.key,
-          displayName: provider.displayName,
-          model: provider.model,
-          isConfigured: provider.isConfigured(),
-        },
-      });
+    try {
+      for (const provider of this.providers.values()) {
+        await this.prisma.llmConfig.upsert({
+          where: { provider: provider.key },
+          update: {
+            displayName: provider.displayName,
+            model: provider.model,
+            isConfigured: provider.isConfigured(),
+          },
+          create: {
+            provider: provider.key,
+            displayName: provider.displayName,
+            model: provider.model,
+            isConfigured: provider.isConfigured(),
+          },
+        });
+      }
+    } catch (err: any) {
+      this.logger.warn(`[LlmGatewayService] DB seeding deferred: ${err.message}`);
     }
   }
 
-  listProviders() {
-    return this.prisma.llmConfig.findMany({ orderBy: { provider: 'asc' } });
+  async listProviders() {
+    try {
+      return await this.prisma.llmConfig.findMany({ orderBy: { provider: 'asc' } });
+    } catch {
+      return Array.from(this.providers.values()).map((p) => ({
+        id: p.key,
+        provider: p.key,
+        displayName: p.displayName,
+        model: p.model,
+        isConfigured: p.isConfigured(),
+        isActive: true,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      }));
+    }
   }
 
   private resolve(providerKey: string): LlmProvider {

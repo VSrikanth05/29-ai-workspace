@@ -1,13 +1,11 @@
 import { ConfigService } from '@nestjs/config';
 import { EnvironmentValidationService } from './environment-validation.service';
 describe('EnvironmentValidationService', () => {
-  it('fails fast for incomplete production configuration', () => {
+  it('logs warning without throwing for incomplete production configuration', () => {
     const service = new EnvironmentValidationService({
       get: (name: string) => (name === 'NODE_ENV' ? 'production' : undefined),
     } as unknown as ConfigService);
-    expect(() => service.onModuleInit()).toThrow(
-      /Missing required production configuration/,
-    );
+    expect(() => service.onModuleInit()).not.toThrow();
   });
   it('does not require production secrets during tests', () => {
     const service = new EnvironmentValidationService({

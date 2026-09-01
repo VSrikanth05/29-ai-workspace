@@ -14,87 +14,59 @@ import { JsonLogger } from './common/logger/json.logger';
 import { requestLoggingMiddleware } from './common/logger/request-logging.middleware';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule, {
-    logger: new JsonLogger(),
-    bufferLogs: true,
-    bodyParser: false,
-  });
-  const config = app.get(ConfigService);
-  const production = config.get<string>('NODE_ENV') === 'production';
-  const expressApp = app.getHttpAdapter().getInstance() as unknown as Express;
-  const httpServer = app.getHttpServer() as Server;
-  const bodyLimit = config.get<string>('REQUEST_BODY_LIMIT') ?? '1mb';
-  app.use(json({ limit: bodyLimit, strict: true }));
-  app.use(urlencoded({ extended: false, limit: bodyLimit }));
-  expressApp.set('trust proxy', Number(config.get('TRUST_PROXY_HOPS')) || 1);
-  httpServer.requestTimeout =
-    Number(config.get('REQUEST_TIMEOUT_MS')) || 30_000;
-  httpServer.headersTimeout =
-    Number(config.get('HEADERS_TIMEOUT_MS')) || 35_000;
+  try {
+    const app = await NestFactory.create(AppModule, {
+      bufferLogs: true,
+      bodyParser: false,
+    });
+    const config = app.get(ConfigService);
+    const expressApp = app.getHttpAdapter().getInstance() as unknown as Express;
+    const httpServer = app.getHttpServer() as Server;
+    const bodyLimit = config.get<string>('REQUEST_BODY_LIMIT') ?? '10mb';
+    app.use(json({ limit: bodyLimit, strict: true }));
+    app.use(urlencoded({ extended: false, limit: bodyLimit }));
+    expressApp.set('trust proxy', Number(config.get('TRUST_PROXY_HOPS')) || 1);
+    httpServer.requestTimeout =
+      Number(config.get('REQUEST_TIMEOUT_MS')) || 30_000;
+    httpServer.headersTimeout =
+      Number(config.get('HEADERS_TIMEOUT_MS')) || 35_000;
 
-  app.use(
-    helmet({
-      contentSecurityPolicy: production
-        ? {
-            directives: {
-              defaultSrc: ["'none'"],
-              frameAncestors: ["'none'"],
-              baseUri: ["'none'"],
-              formAction: ["'none'"],
-            },
-          }
-        : false,
-      strictTransportSecurity: production
-        ? { maxAge: 31_536_000, includeSubDomains: true, preload: true }
-        : false,
-      crossOriginResourcePolicy: { policy: 'same-site' },
-    }),
-  );
-  app.use(compression());
-  app.use(requestLoggingMiddleware);
-
-  const allowedOrigins = (config.get<string>('CORS_ORIGINS') ?? '')
-    .split(',')
-    .map((origin) => origin.trim())
-    .filter(Boolean);
-  app.enableCors({
-    origin: production
-      ? allowedOrigins
-      : allowedOrigins.length
-        ? allowedOrigins
-        : true,
-    credentials: true,
-    methods: ['GET', 'POST', 'PATCH', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Authorization', 'Content-Type', 'X-Request-Id'],
-    exposedHeaders: ['X-Request-Id'],
-    maxAge: 86_400,
-  });
-
-  app.useGlobalPipes(
-    new ValidationPipe({
-      whitelist: true,
-      transform: true,
-      forbidNonWhitelisted: true,
-    }),
-  );
-  app.useGlobalFilters(new HttpExceptionFilter());
-  app.enableShutdownHooks();
-
-  if (config.get<string>('SWAGGER_ENABLED') !== 'false' && !production) {
-    const swaggerConfig = new DocumentBuilder()
-      .setTitle('AI Document Assistant API')
-      .setDescription('Backend API Documentation')
-      .setVersion('1.0')
-      .addBearerAuth()
-      .build();
-    SwaggerModule.setup(
-      'api',
-      app,
-      SwaggerModule.createDocument(app, swaggerConfig),
+    app.use(
+      helmet({
+        contentSecurityPolicy: false,
+        crossOriginResourcePolicy: { policy: 'cross-origin' },
+      }),
     );
-  }
+    app.use(compression());
+    app.use(requestLoggingMiddleware);
 
-  await app.listen(Number(config.get('PORT')) || 5000, '0.0.0.0');
+    app.enableCors({
+      origin: true,
+      credentials: true,
+      methods: ['GET', 'POST', 'PATCH', 'DELETE', 'OPTIONS'],
+      allowedHeaders: ['Authorization', 'Content-Type', 'X-Request-Id'],
+      exposedHeaders: ['X-Request-Id'],
+      maxAge: 86_400,
+    });
+
+    app.useGlobalPipes(
+      new ValidationPipe({
+        whitelist: true,
+        transform: true,
+        forbidNonWhitelisted: true,
+      }),
+    );
+    app.useGlobalFilters(new HttpExceptionFilter());
+    app.enableShutdownHooks();
+
+    const port = Number(process.env.PORT) || Number(config.get('PORT')) || 5000;
+    await app.listen(port, '0.0.0.0');
+    console.log(`[Bootstrap] Backend API successfully running on port ${port}`);
+  } catch (err: unknown) {
+    const message = err instanceof Error ? err.stack || err.message : String(err);
+    console.error('[Bootstrap] Fatal startup error:', message);
+    process.exit(1);
+  }
 }
 
 void bootstrap();
