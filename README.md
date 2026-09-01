@@ -2,16 +2,19 @@
 
 <div align="center">
 
+[![Live Demo](https://img.shields.io/badge/Live_Demo-Vercel-black?style=for-the-badge&logo=vercel)](https://29-ai-workspace.vercel.app)
+[![Backend API](https://img.shields.io/badge/Backend_API-Render_Live-46E3B7?style=for-the-badge&logo=render)](https://two9-ai-workspace.onrender.com/health)
 [![Next.js 15](https://img.shields.io/badge/Next.js-15.0-black?style=for-the-badge&logo=next.js)](https://nextjs.org/)
 [![React 19](https://img.shields.io/badge/React-19.0-blue?style=for-the-badge&logo=react)](https://react.dev/)
 [![NestJS](https://img.shields.io/badge/NestJS-10.0-E0234E?style=for-the-badge&logo=nestjs)](https://nestjs.com/)
-[![Prisma](https://img.shields.io/badge/Prisma-5.0-2D3748?style=for-the-badge&logo=prisma)](https://www.prisma.io/)
-[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-pgvector-336791?style=for-the-badge&logo=postgresql)](https://www.postgresql.org/)
-[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-v4-38B2AC?style=for-the-badge&logo=tailwind-css)](https://tailwindcss.com/)
+[![Prisma](https://img.shields.io/badge/Prisma-6.0-2D3748?style=for-the-badge&logo=prisma)](https://www.prisma.io/)
+[![PostgreSQL](https://img.shields.io/badge/Supabase-pgvector-3ECF8E?style=for-the-badge&logo=supabase)](https://supabase.com/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](https://opensource.org/licenses/MIT)
 
 **An open-source, full-stack, multimodal alternative to Google NotebookLM.**  
 *Grounded Document Intelligence • Multi-Provider LLM Gateway • AI Studio Deliverables • Dedicated Media Generation Hub*
+
+### 🌐 [Click Here to Open the Live Application (https://29-ai-workspace.vercel.app)](https://29-ai-workspace.vercel.app)
 
 </div>
 
@@ -21,7 +24,9 @@
 
 **29 AI Workspace** is an enterprise-ready AI Knowledge Operating System designed to ingest, ground, learn from, analyze, and synthesize trusted source material.
 
-With deep Retrieval-Augmented Generation (RAG), vector similarity search, unified multi-provider routing (NVIDIA NIM, OpenRouter, Google Gemini, OpenAI, Anthropic), and dedicated generative studios, 29 AI Workspace turns your documents, datasets, and creative prompts into actionable insights and media.
+- 🚀 **Live Frontend (Vercel)**: [https://29-ai-workspace.vercel.app](https://29-ai-workspace.vercel.app)
+- ⚙️ **Live Backend API (Render)**: [https://two9-ai-workspace.onrender.com](https://two9-ai-workspace.onrender.com)
+- 🗄️ **Database & Vector Store (Supabase)**: PostgreSQL + `pgvector` in Mumbai (`ap-south-1`)
 
 ---
 
