@@ -1,4 +1,10 @@
-const API_BASE_URL = (process.env.NEXT_PUBLIC_API_URL ?? '/api').replace(/\/$/, '');
+const API_BASE_URL = (
+  process.env.NEXT_PUBLIC_API_URL ||
+  process.env.NEXT_PUBLIC_BACKEND_URL ||
+  (typeof window !== 'undefined' && window.location.hostname.includes('vercel.app')
+    ? 'https://two9-ai-workspace.onrender.com'
+    : '/api')
+).replace(/\/$/, '');
 export const ACCESS_TOKEN_KEY = '29ai.access-token';
 export const REFRESH_TOKEN_KEY = '29ai.refresh-token';
 export const LEGACY_ACCESS_TOKEN_KEY = 'access_token';
