@@ -1,0 +1,79 @@
+@import 'tailwindcss';
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+:root {
+  color-scheme: light;
+  --background: oklch(0.985 0.004 275);
+  --foreground: oklch(0.22 0.025 275);
+  --panel: oklch(0.97 0.006 275);
+  --sidebar: oklch(0.955 0.009 275);
+  --muted: oklch(0.94 0.009 275);
+  --muted-foreground: oklch(0.52 0.025 275);
+  --accent: oklch(0.925 0.018 275);
+  --border: oklch(0.88 0.012 275);
+  --primary: oklch(0.57 0.23 281);
+  --primary-foreground: oklch(0.99 0.004 275);
+  --ring: oklch(0.62 0.2 281);
+}
+
+.dark {
+  color-scheme: dark;
+  --background: oklch(0.17 0.018 275);
+  --foreground: oklch(0.94 0.008 275);
+  --panel: oklch(0.195 0.019 275);
+  --sidebar: oklch(0.145 0.018 275);
+  --muted: oklch(0.235 0.018 275);
+  --muted-foreground: oklch(0.68 0.018 275);
+  --accent: oklch(0.26 0.028 275);
+  --border: oklch(0.29 0.02 275);
+  --primary: oklch(0.7 0.19 281);
+  --primary-foreground: oklch(0.15 0.02 275);
+  --ring: oklch(0.7 0.19 281);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-panel: var(--panel);
+  --color-sidebar: var(--sidebar);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-border: var(--border);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-ring: var(--ring);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+* { border-color: var(--border); }
+html { background: var(--background); }
+body { min-height: 100dvh; background: var(--background); color: var(--foreground); font-family: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif; text-rendering: optimizeLegibility; }
+button, input, textarea { font: inherit; }
+.field { margin-top: .35rem; height: 2.5rem; width: 100%; border-radius: .5rem; border: 1px solid var(--border); background: var(--background); padding: 0 .75rem; font-size: .875rem; }
+::selection { background: color-mix(in oklab, var(--primary) 24%, transparent); }
+
+.skip-link { position: fixed; left: 1rem; top: -4rem; z-index: 100; border-radius: .5rem; background: var(--primary); padding: .6rem 1rem; color: var(--primary-foreground); font-size: .875rem; font-weight: 600; transition: top .15s ease; }
+.skip-link:focus { top: 1rem; outline: 2px solid var(--ring); outline-offset: 2px; }
+.safe-bottom { padding-bottom: env(safe-area-inset-bottom); }
+.scrollbar-none { scrollbar-width: none; }
+.scrollbar-none::-webkit-scrollbar { display: none; }
+
+.studio-accent { color: oklch(0.55 0.2 280); background: oklch(0.93 0.04 280); }
+.studio-accent-blue { color: oklch(0.52 0.19 255); background: oklch(0.93 0.04 255); }
+.studio-accent-cyan { color: oklch(0.48 0.12 210); background: oklch(0.93 0.04 210); }
+.studio-accent-emerald { color: oklch(0.48 0.13 160); background: oklch(0.93 0.04 160); }
+.studio-accent-amber { color: oklch(0.55 0.14 75); background: oklch(0.94 0.05 75); }
+.studio-accent-rose { color: oklch(0.55 0.19 15); background: oklch(0.94 0.04 15); }
+.dark .studio-accent { background: oklch(0.3 0.06 280); color: oklch(0.78 0.13 280); }
+.dark .studio-accent-blue { background: oklch(0.29 0.06 255); color: oklch(0.78 0.12 255); }
+.dark .studio-accent-cyan { background: oklch(0.28 0.05 210); color: oklch(0.79 0.1 210); }
+.dark .studio-accent-emerald { background: oklch(0.28 0.05 160); color: oklch(0.78 0.11 160); }
+.dark .studio-accent-amber { background: oklch(0.3 0.05 75); color: oklch(0.82 0.12 75); }
+.dark .studio-accent-rose { background: oklch(0.29 0.05 15); color: oklch(0.78 0.13 15); }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+}

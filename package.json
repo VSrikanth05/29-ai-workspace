@@ -1,0 +1,19 @@
+{
+  "name": "ai-document-assistant-root",
+  "private": true,
+  "description": "Root workspace holding the shared Prisma schema (backend/frontend both point at this).",
+  "scripts": {
+    "prisma:generate": "prisma generate",
+    "prisma:migrate:dev": "prisma migrate dev",
+    "prisma:migrate:deploy": "prisma migrate deploy",
+    "prisma:studio": "prisma studio"
+  },
+  "dependencies": {
+    "@prisma/client": "^6.19.3",
+    "@prisma/instrumentation": "^6.19.3"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "prisma": "^6.19.3"
+  }
+}

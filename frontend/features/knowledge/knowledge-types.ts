@@ -1,0 +1,12 @@
+import type { AIOutput, AIOutputType } from '@/features/ai-studio/ai-studio-types';
+export type CollectionItem = { id: string; source: { id: string; originalName: string; mimeType: string } | null; output: { id: string; title: string; type: AIOutputType } | null };
+export type Collection = { id: string; name: string; parentId: string | null; position: number; items: CollectionItem[]; _count: { items: number; children: number } };
+export type Tag = { id: string; name: string; color: string | null; _count: { assignments: number } };
+export type Favorite = { id: string; source: { id: string; originalName: string; mimeType: string; updatedAt: string } | null; output: { id: string; title: string; type: AIOutputType; updatedAt: string } | null };
+export type Preference = { workspaceId: string; defaultProvider: string; defaultModel: string; language: string; theme: 'light' | 'dark' | 'system'; defaultExportFormat: 'markdown' | 'json' | 'csv'; streaming: boolean; autosave: boolean };
+export type OutputVersion = { id: string; event: 'CREATED' | 'UPDATED' | 'REGENERATED' | 'RESTORED'; title: string; provider: string; model: string; createdAt: string; metadata: unknown };
+export type Highlight = { text: string; match: boolean }[];
+export type SearchItem = { id: string; kind: 'source' | 'conversation' | 'output' | 'collection' | 'tag'; label: string; highlight: Highlight; snippet?: string; score?: number; retrievalMethods?: string[] };
+export type SearchResult = { query: string; total: number; groups: Record<string, SearchItem[]> };
+export type SavedSearch = { id: string; name: string; query: string; tagId: string | null; createdAt: string; updatedAt: string };
+export type OutputWithFavorite = AIOutput & { favoriteId?: string };

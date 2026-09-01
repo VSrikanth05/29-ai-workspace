@@ -1,0 +1,16 @@
+import type { ChatMessage } from '@/features/chat/chat-types';
+
+export type MindMapNode = { id: string; label: string; children?: MindMapNode[] };
+export type Flashcard = { question: string; answer: string; difficulty?: 'easy' | 'medium' | 'hard'; category?: string };
+export type QuizQuestion = { id?: string; type: 'multiple-choice' | 'true-false' | 'short-answer'; prompt: string; options?: string[]; answer: string; explanation?: string; difficulty?: string };
+export type ColumnProfile = { name: string; type: 'number' | 'date' | 'text'; count: number; missing: number; unique: number; min: number | null; max: number | null; mean: number | null; median: number | null };
+export type ChartType = 'bar' | 'line' | 'pie' | 'scatter' | 'histogram' | 'area';
+export type ChartContent = { format: 'chart'; chartType: ChartType; title: string; xKey: string; yKey: string; data: Record<string, string | number | null>[]; csv?: string };
+export type AnalyticsContent = { format: 'analytics'; filename: string; summary: string; rowCount: number; sheetCount: number; sheets: { name: string; rowCount: number }[]; columns: ColumnProfile[]; missingValues: number; duplicateRows: number[]; correlations: { x: string; y: string; coefficient: number }[]; distributions: { column: string; values: { value: string; count: number }[] }[]; outliers: { column: string; row: number; value: number }[]; trends: { column: string; direction: string; change: number }[]; suggestedCharts: { type: ChartType; xKey: string; yKey: string; reason: string }[]; data: Record<string, string | number | null>[]; csv?: string };
+export type AIOutputType = 'SUMMARY' | 'MIND_MAP' | 'TRANSLATION' | 'REPORT' | 'KEY_POINTS' | 'GLOSSARY' | 'FLASHCARDS' | 'QUIZ' | 'STUDY_GUIDE' | 'ANALYTICS_REPORT' | 'CHART';
+export type ImageTranslationContent = { format: 'image-translation'; imageTranslationId: string; extractedText: string; translatedText: string; sourceLanguage: string; targetLanguage: string; markdown?: string };
+export type AIOutputContent = { format: 'markdown' | 'mind-map' | 'flashcards' | 'quiz' | 'analytics' | 'chart'; markdown?: string; root?: MindMapNode; flashcards?: Flashcard[]; questions?: QuizQuestion[] } | AnalyticsContent | ChartContent | ImageTranslationContent;
+export type AIOutput = { id: string; type: AIOutputType; title: string; provider: string; model: string; workspaceId: string; conversationId: string; createdAt: string; content: AIOutputContent; sources: { source: { id: string; originalName: string } }[] };
+export type TransientToolResult = { conversationId: string; message: ChatMessage; sources: unknown[]; finishReason: string };
+export type MediaAsset = { id: string; type: 'IMAGE' | 'VIDEO' | 'AUDIO'; status: string; prompt: string; provider: string; model: string | null; mimeType: string | null; url: string | null; error: string | null; createdAt: string; updatedAt: string };
+export type ImageTranslationResult = { id: string; originalName: string; mimeType: string; size: number; status: string; sourceLanguage: string; targetLanguage: string; extractedText: string; translatedText: string; ocrBoxes: unknown[]; originalUrl: string; translatedUrl: string | null; translatedMimeType: string | null; error: string | null; workspaceId: string; createdAt: string; updatedAt: string };
